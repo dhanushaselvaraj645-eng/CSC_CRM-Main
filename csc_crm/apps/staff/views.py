@@ -636,13 +636,53 @@ def staff_export(request, id):
             ])
 
     return response
-     
+    
 #============================================================Attendance page=======================================================================   
+from django.utils import timezone
+from datetime import datetime, time
 
+def auto_checkout_pending_attendance():
+
+    current_time = timezone.localtime()
+
+    if current_time.time() < time(19, 00):
+        return
+
+    
+
+    pending_attendance = Attendance.objects.filter(
+        log_in__isnull=False,
+        log_out__isnull=True
+    )
+
+    for attendance in pending_attendance:
+
+        auto_logout_time = timezone.make_aware(
+            datetime.combine(
+                attendance.date,
+                time(18, 30)
+            )
+        )
+
+        attendance.log_out = auto_logout_time
+
+        worked_time = (
+            attendance.log_out -
+            attendance.log_in
+        )
+
+        worked_hours = (
+            worked_time.total_seconds() / 3600
+        )
+
+        if worked_hours < 4:
+            attendance.status = 'Absent'
+
+        attendance.save()
 #======attendance=========
 def attendance_page(request, id):
 
-
+    auto_checkout_pending_attendance()
     staff = get_object_or_404(Staff, id=id)
 
     # ================= TODAY =================
@@ -745,14 +785,14 @@ def export_attendance(request, id):
 #==================================================================staff-checkin page===============================================
 def staff_checkin(request, id):
 
- 
+    auto_checkout_pending_attendance()
 
     staff = Staff.objects.get(id=id)
     today = timezone.localdate()
     
     current_time = timezone.localtime(timezone.now())
 
-    is_checkout_closed = current_time.time() >= time(19, 0)
+    is_checkout_closed = current_time.time() >= time(19, 00)
 
     # ================= TODAY ATTENDANCE =================
     today_attendance = Attendance.objects.filter(staff=staff, date=today).first()
@@ -805,7 +845,7 @@ def staff_checkin(request, id):
         # -------- CHECKOUT --------
         elif action == 'checkout':
 
-            if current_time.time() >= time(19, 0):
+            if current_time.time() >= time(19, 00):
 
                 messages.error(
                 request,
@@ -861,6 +901,7 @@ def staff_checkin(request, id):
 
         'is_checkout_closed': is_checkout_closed,
     })
+
 
 
 #======================================== DOCUMENT =========================================
