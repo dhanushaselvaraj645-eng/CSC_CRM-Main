@@ -641,6 +641,7 @@ body.menu-open::before{
         gap:10px;
         text-align:center;
     }
+    
 
 }
 .success-message{
@@ -705,5 +706,37 @@ text-decoration:none;
     cursor:not-allowed;
     pointer-events:none;
      margin-left:auto;
+}
+
+.att-header-buttons {
+    display: flex;
+    gap: 10px;
+       
+    position:absolute;
+    right:14%;
+   
+    
+
+}
+
+.att-back-btn {
+    padding: 10px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+    background: var(--secondary);
+    color: var(--text);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    
+}
+
+.att-back-btn:hover {
+    background: #fff85a;
+    color: var(--text);
+    transform: translateY(-1px);
 }
 /* ====================MENU BUTTON======================== */

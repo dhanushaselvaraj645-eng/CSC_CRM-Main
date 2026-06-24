@@ -29,10 +29,19 @@
     <button class="att-nav-toggle" id="attnavToggle">
             <i class="fas fa-bars"></i>
         </button>
-
+    
     <h1>Attendance</h1>
+
+      <div class="att-header-buttons">
+
+        <a href="{% url 'overview' staff.id %}" class="att-back-btn">
+            <i class="fa fa-arrow-left"></i> Back 
+        </a>
+
+
+    </div>
      
-{% if staff.status != 'terminated' %}
+{% if staff.status != 'terminated' and staff.role.role_name != "Admin" %}
 
     {% if today_attendance and today_attendance.status == 'Leave' %}
 
@@ -342,7 +351,7 @@
 
   <span>  <h2>Attendance History</h2></span>
 
-    <a href="{% url 'export_attendance' staff.id %}" class="attendance-submit">Export Excel</a>
+   <a href="{% url 'export_attendance' staff.id %}?{{ request.GET.urlencode }}" class="attendance-submit"> Export Excel</a>
 
     </div>
         
