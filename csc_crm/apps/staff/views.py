@@ -645,8 +645,13 @@ def auto_checkout_pending_attendance():
 
     current_time = timezone.localtime()
 
+    print("Current Time:", current_time)
+
     if current_time.time() < time(19, 00):
+        print("Before 7 PM")
         return
+
+    print("After 7 PM - Auto Checkout Running")
 
     
 
@@ -654,15 +659,17 @@ def auto_checkout_pending_attendance():
         log_in__isnull=False,
         log_out__isnull=True
     )
-
+    print("Pending Attendance:", pending_attendance.count())
     for attendance in pending_attendance:
 
-        auto_logout_time = timezone.make_aware(
-            datetime.combine(
+        auto_logout_time = timezone.localtime(
+            timezone.make_aware(
+              datetime.combine(
                 attendance.date,
-                time(18, 30)
-            )
+                   time(18, 30)
         )
+    )
+)
 
         attendance.log_out = auto_logout_time
 
@@ -679,6 +686,7 @@ def auto_checkout_pending_attendance():
             attendance.status = 'Absent'
 
         attendance.save()
+        print("Saved:", attendance.staff, attendance.log_out)
 #======attendance=========
 def attendance_page(request, id):
 
@@ -859,7 +867,7 @@ def staff_checkin(request, id):
 
         # -------- CHECKIN --------
         if action == 'checkin':
-            if current_time.time() >= time(19, 00):
+            if current_time.time() >= time(19 , 00):
                 messages.error(
                 request,"Check-In is not allowed after 7:00 PM.")
                 return redirect("attendance", id=staff.id)
@@ -880,7 +888,7 @@ def staff_checkin(request, id):
         # -------- CHECKOUT --------
         elif action == 'checkout':
 
-            if current_time.time() >= time(19, 00):
+            if current_time.time() >= time(19 , 00):
 
                 messages.error(
                 request,
