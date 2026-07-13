@@ -134,6 +134,44 @@
 
     {% block extra_js %}{% endblock %}
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const path = window.location.pathname;
+
+    // Remove active class
+    document.querySelectorAll(".sidebar-menu a").forEach(link => {
+        link.classList.remove("active");
+    });
+
+    // Staff Module
+    if (path.includes("/staff/")) {
+        document.querySelector('a[href*="management"]')?.classList.add("active");
+    }
+
+    // Leads Module
+    else if (path.includes("/leads/")) {
+        document.querySelector('a[href*="lead"]')?.classList.add("active");
+    }
+
+    // Admission Module
+    else if (path.includes("/admission/")) {
+        document.querySelector('a[href*="admission"]')?.classList.add("active");
+    }
+
+    // Leave Module
+    else if (path.includes("/leave/")) {
+        document.querySelector('a[href*="leave"]')?.classList.add("active");
+    }
+
+    // Attendance Module (if it is a separate app)
+    else if (path.includes("/attendance/")) {
+        document.querySelector('a[href*="attendance"]')?.classList.add("active");
+    }
+
+});
+</script>
+
 </body>
 
 
