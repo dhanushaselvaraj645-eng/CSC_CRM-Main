@@ -1049,3 +1049,8 @@ def update_document_status(request, doc_id):
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({'success': True, 'status': new_status})
     return redirect('staff_documents', staff_id=doc.staff.id)
+
+
+
+def dashboard(request):
+    return render(request, 'staff/home.html')
